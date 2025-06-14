@@ -1,28 +1,72 @@
-# ~/.webiq/config.yaml (This is a comment indicating where user might override)
-# This file (default_config.yaml) provides the defaults.
+# Default application configuration for WebIQ
 
+# Steel Browser Configuration (if/when integrated)
 steel:
-  api_key: "${STEEL_API_KEY}" # User should replace this or set env var
+  api_key: "${STEEL_API_KEY_ENV_VAR}" # Example: Read from environment variable
   base_url: "https://api.steel.dev"
   websocket_url: "wss://connect.steel.dev"
 
+# Gemini LLM Configuration
 gemini:
-  api_key: "${GOOGLE_API_KEY}" # User should replace this or set env var
+  api_key: "${GEMINI_API_KEY_ENV_VAR}" # Example: Read from environment variable
   model: "gemini-2.0-flash"
   generation_config:
-    temperature: 0.1  # Low for consistent automation
-    max_output_tokens: 8192
+    temperature: 0.1
+    max_output_tokens: 12000 # As per PRD for comprehensive code
     top_p: 0.8
     top_k: 40
 
+# Stagehand AI Framework Configuration
 stagehand:
-  model_name: "google/gemini-2.0-flash" # Default to gemini, can be overridden
+  model_name: "google/gemini-2.0-flash" # Ensure this aligns with gemini.model
   enable_caching: true
-  cache_duration: 3600  # 1 hour cache for cost optimization
-  verbose: 1 # Default verbosity
+  cache_duration: 3600  # 1 hour
+  verbose: 1 # 0 for less output, 1 for detailed, 2 for debug
+  # localBrowserLaunchOptions will be constructed dynamically based on Steel session
 
+# Goal-Specific Settings & Templates
+goal_templates:
+  ecommerce_signup:
+    description: "Create account on e-commerce platforms"
+    required_fields: ["email", "password"]
+    optional_fields: ["name", "phone", "address"]
+    success_indicators: ["welcome message", "account dashboard", "confirmation email"]
+    common_obstacles: ["captcha", "email verification", "terms acceptance"]
+
+  newsletter_subscription:
+    description: "Subscribe to newsletters and mailing lists"
+    required_fields: ["email"]
+    optional_fields: ["name", "preferences"]
+    success_indicators: ["thank you message", "confirmation email", "success popup"]
+    common_obstacles: ["captcha", "double opt-in"]
+
+  contact_form:
+    description: "Submit contact or inquiry forms"
+    required_fields: ["name", "email", "message"]
+    optional_fields: ["phone", "company", "subject"]
+    success_indicators: ["thank you page", "confirmation message", "form cleared"]
+    common_obstacles: ["captcha", "file upload", "validation errors"]
+
+  login_account:
+    description: "Login to existing accounts"
+    required_fields: ["username", "password"]
+    optional_fields: ["remember_me", "two_factor"]
+    success_indicators: ["dashboard", "profile page", "welcome back"]
+    common_obstacles: ["captcha", "2FA", "security questions"]
+
+# Cost Optimization Settings
 cost_optimization:
-  gemini_cost_limit_daily: 5.00  # $5/day limit
-  cache_hit_target: 0.70  # Target 70% cache hit rate
-  session_reuse_max: 15  # Reuse sessions up to 15 times
-  batch_size: 5  # Process multiple automations per session
+  gemini_cost_limit_daily: 10.00  # USD
+  cache_hit_target: 0.75  # Target 75% cache hit rate for Stagehand
+  session_reuse_max: 20  # Max times a Steel session can be reused for similar goals
+  batch_size: 8  # Default batch size for commands that support it
+  goal_complexity_pricing: # Estimated costs, for reference or future features
+    simple: 0.005   # e.g., newsletter signup
+    medium: 0.012   # e.g., account creation
+    complex: 0.025  # e.g., multi-step workflows
+
+# Logging Configuration (Example)
+logging:
+  level: "INFO" # Possible values: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "webiq.log" # Optional: log to a file
