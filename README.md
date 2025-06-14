@@ -1,4 +1,3 @@
-```markdown
 # WebIQ - AI-Powered Web Automation CLI
 <div align="center">
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
