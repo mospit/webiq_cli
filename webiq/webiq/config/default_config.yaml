@@ -1,0 +1,28 @@
+# ~/.webiq/config.yaml (This is a comment indicating where user might override)
+# This file (default_config.yaml) provides the defaults.
+
+steel:
+  api_key: "${STEEL_API_KEY}" # User should replace this or set env var
+  base_url: "https://api.steel.dev"
+  websocket_url: "wss://connect.steel.dev"
+
+gemini:
+  api_key: "${GOOGLE_API_KEY}" # User should replace this or set env var
+  model: "gemini-2.0-flash"
+  generation_config:
+    temperature: 0.1  # Low for consistent automation
+    max_output_tokens: 8192
+    top_p: 0.8
+    top_k: 40
+
+stagehand:
+  model_name: "google/gemini-2.0-flash" # Default to gemini, can be overridden
+  enable_caching: true
+  cache_duration: 3600  # 1 hour cache for cost optimization
+  verbose: 1 # Default verbosity
+
+cost_optimization:
+  gemini_cost_limit_daily: 5.00  # $5/day limit
+  cache_hit_target: 0.70  # Target 70% cache hit rate
+  session_reuse_max: 15  # Reuse sessions up to 15 times
+  batch_size: 5  # Process multiple automations per session
