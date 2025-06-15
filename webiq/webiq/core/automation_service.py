@@ -2,6 +2,8 @@ import asyncio
 import logging
 from webiq.core.stagehand_config import get_stagehand_config
 from webiq.core.recording_session import GoalAwareRecordingSession
+from .agents import WebAutomationOrchestrator, AgentState
+from .langgraph_recording_session import LangGraphRecordingSession
 
 logger = logging.getLogger(__name__)
 
@@ -46,75 +48,73 @@ class MockStagehand:
 
 async def goal_aware_recording(url: str, goal: str, options: dict, gemini_api_key: str, steel_api_key: str):
     """
-    Record user interactions with goal context for better analysis.
-    Initializes Stagehand, performs initial analysis, and starts a recording session.
+    Record user interactions with goal context using LangGraph multi-agent architecture.
+    Initializes Stagehand, creates multi-agent orchestrator, and runs automated workflow.
     """
-    logger.info(f"Starting goal-aware recording for URL: {url}, Goal: {goal}")
+    logger.info(f"Starting LangGraph multi-agent goal-aware recording for URL: {url}, Goal: {goal}")
 
-    # Simulate creating a Steel session
-    steel_session_id = f"sim_steel_session_{asyncio.get_event_loop().time()}"
-    logger.info(f"Simulated Steel session created with ID: {steel_session_id}")
+    try:
+        # Create Steel session
+        steel_session_id = f"steel_session_{asyncio.get_event_loop().time()}"
+        logger.info(f"Steel session created with ID: {steel_session_id}")
 
-    # Get Stagehand configuration
-    stagehand_config = get_stagehand_config(gemini_api_key, steel_api_key, steel_session_id)
+        # Get Stagehand configuration
+        stagehand_config = get_stagehand_config(gemini_api_key, steel_api_key, steel_session_id)
 
-    # Initialize Stagehand (mocked)
-    # In a real scenario: from stagehand import Stagehand
-    stagehand = MockStagehand(stagehand_config) # Replace with actual Stagehand(stagehand_config)
-    await stagehand.init()
+        # Initialize Stagehand (use MockStagehand for now, replace with real Stagehand when ready)
+        # from stagehand import Stagehand
+        stagehand = MockStagehand(stagehand_config)  # Replace with: Stagehand(stagehand_config)
+        await stagehand.init()
 
-    logger.info(f"Navigating to URL: {url}")
-    await stagehand.page.goto(url, waitUntil="networkidle")
+        logger.info(f"Navigating to URL: {url}")
+        await stagehand.page.goto(url, waitUntil="networkidle")
 
-    # Analyze page with goal context (simulated)
-    goal_analysis_instruction = f"""
-Analyze this webpage to understand how to accomplish the goal: "{goal}"
+        # Create Steel session object
+        steel_session = {"id": steel_session_id, "status": "active"}
 
-Provide detailed analysis of:
-1. Steps required to achieve the goal
-2. Form fields and their relevance to the goal
-3. Potential obstacles or challenges
-4. Success indicators for goal completion
-5. Alternative paths to achieve the same goal
-6. Anti-bot measures that might interfere
-"""
-    goal_analysis_schema = {
-        "type": "object",
-        "properties": {
-            "goal_steps": {"type": "array", "items": {"type": "string"}},
-            "required_fields": {"type": "array"}, # Each item could be an object with name, type etc.
-            "optional_fields": {"type": "array"},
-            "obstacles": {"type": "array", "items": {"type": "string"}},
-            "success_indicators": {"type": "array", "items": {"type": "string"}},
-            "alternative_paths": {"type": "array", "items": {"type": "string"}},
-            "anti_bot_measures": {"type": "array", "items": {"type": "string"}},
-            "estimated_difficulty": {"type": "string", "enum": ["simple", "medium", "complex"]},
-            "success_probability": {"type": "number", "minimum": 0, "maximum": 1}
-        },
-        "required": ["goal_steps", "required_fields", "obstacles", "success_indicators"]
-    }
+        # Initialize LangGraph multi-agent orchestrator
+        orchestrator = WebAutomationOrchestrator(gemini_api_key, steel_api_key)
+        
+        logger.info("Starting multi-agent automation workflow...")
+        
+        # Run the multi-agent workflow
+        automation_result = await orchestrator.run_automation(
+            url=url,
+            goal=goal,
+            stagehand_instance=stagehand,
+            steel_session=steel_session,
+            options=options
+        )
+        
+        # Create enhanced recording session with automation results
+        recording_session = LangGraphRecordingSession(
+            stagehand=stagehand,
+            steel_session=steel_session,
+            goal=goal,
+            automation_result=automation_result,
+            options=options,
+            orchestrator=orchestrator
+        )
 
-    logger.info("Performing initial goal analysis with Stagehand/Gemini...")
-    goal_analysis_result = await stagehand.page.extract({
-        "instruction": goal_analysis_instruction,
-        "schema": goal_analysis_schema
-    })
-    logger.info(f"Initial goal analysis result: {goal_analysis_result}")
-
-    # Instantiate GoalAwareRecordingSession
-    # Simulate steel_session object for now
-    mock_steel_session = {"id": steel_session_id, "status": "active"}
-
-    recording_session = GoalAwareRecordingSession(
-        stagehand=stagehand,
-        steel_session=mock_steel_session,
-        goal=goal,
-        goal_analysis=goal_analysis_result,
-        options=options
-    )
-
-    logger.info(f"GoalAwareRecordingSession created for goal: {goal}")
-    return recording_session
+        logger.info(f"LangGraph multi-agent recording session created for goal: {goal}")
+        logger.info(f"Automation completed with state: {automation_result.agent_state}")
+        logger.info(f"Completion percentage: {automation_result.completion_percentage}%")
+        
+        return recording_session
+        
+    except Exception as e:
+        logger.error(f"Error in goal_aware_recording: {e}", exc_info=True)
+        # Return a basic recording session for fallback
+        steel_session = {"id": "fallback_session", "status": "error"}
+        stagehand = MockStagehand({})
+        
+        return GoalAwareRecordingSession(
+            stagehand=stagehand,
+            steel_session=steel_session,
+            goal=goal,
+            goal_analysis={"error": str(e)},
+            options=options
+        )
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

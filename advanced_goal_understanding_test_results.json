@@ -1,0 +1,96 @@
+{
+  "timestamp": "2025-06-15T00:14:37.087137",
+  "summary": {
+    "total_tests": 14,
+    "passed_tests": 14,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "total_duration": 2.345216
+  },
+  "detailed_results": [
+    {
+      "test_name": "AdvancedGoalProcessor Initialization",
+      "status": "PASSED",
+      "duration": 2.338572,
+      "result": "AdvancedGoalProcessor initialized successfully"
+    },
+    {
+      "test_name": "Goal Complexity Analysis",
+      "status": "PASSED",
+      "duration": 0.000937,
+      "result": "Complexity analysis working: simple=moderate, complex=complex"
+    },
+    {
+      "test_name": "Goal Decomposition",
+      "status": "PASSED",
+      "duration": 0.001265,
+      "result": "Goal decomposed into 5 sub-goals with execution graph"
+    },
+    {
+      "test_name": "RequirementExtractor Initialization",
+      "status": "PASSED",
+      "duration": 1.9e-05,
+      "result": "RequirementExtractor initialized successfully"
+    },
+    {
+      "test_name": "Explicit Requirement Extraction",
+      "status": "PASSED",
+      "duration": 0.00049,
+      "result": "Extracted 4 explicit requirements"
+    },
+    {
+      "test_name": "Implicit Requirement Inference",
+      "status": "PASSED",
+      "duration": 0.000408,
+      "result": "Inferred 6 implicit requirements for banking scenario"
+    },
+    {
+      "test_name": "Constraint Extraction",
+      "status": "PASSED",
+      "duration": 0.000418,
+      "result": "Extracted 5 constraints"
+    },
+    {
+      "test_name": "ContextualStrategySelector Initialization",
+      "status": "PASSED",
+      "duration": 4.4e-05,
+      "result": "ContextualStrategySelector initialized with 5 strategy templates"
+    },
+    {
+      "test_name": "Strategy Selection",
+      "status": "PASSED",
+      "duration": 0.000158,
+      "result": "Selected strategy: conservative_sequential with score 0.84"
+    },
+    {
+      "test_name": "Strategy Customization",
+      "status": "PASSED",
+      "duration": 5.7e-05,
+      "result": "Strategy customized with metadata and context-specific adjustments"
+    },
+    {
+      "test_name": "Performance History Update",
+      "status": "PASSED",
+      "duration": 4.2e-05,
+      "result": "Performance history updated successfully"
+    },
+    {
+      "test_name": "Integrated Goal Processing Workflow",
+      "status": "PASSED",
+      "duration": 0.001228,
+      "result": "Integrated workflow completed: {'complexity_score': 'moderate', 'total_requirements': 21, 'constraint_count': 0, 'sub_goal_count': 5, 'selected_strategy': 'conservative_sequential', 'strategy_confidence': 0.3}"
+    },
+    {
+      "test_name": "Error Handling and Fallbacks",
+      "status": "PASSED",
+      "duration": 0.000628,
+      "result": "Error handling and fallbacks working correctly"
+    },
+    {
+      "test_name": "Performance and Scalability",
+      "status": "PASSED",
+      "duration": 0.00095,
+      "result": "Processed 3 goals in 0.00s (avg: 0.00s per goal)"
+    }
+  ]
+}

@@ -1,12 +1,24 @@
-class GoalNotAchievableError(Exception):
+class WebIQError(Exception):
+    """Base exception class for WebIQ-related errors."""
+    pass
+
+class AutomationError(WebIQError):
+    """Raised when automation operations fail."""
+    pass
+
+class ConfigurationError(WebIQError):
+    """Raised when configuration is invalid or missing."""
+    pass
+
+class GoalNotAchievableError(WebIQError):
     """Raised when the goal cannot be achieved on the current page/context."""
     pass
 
-class GoalBlockedError(Exception):
+class GoalBlockedError(WebIQError):
     """Raised when progress toward the goal is blocked by an obstacle (e.g., CAPTCHA, missing info)."""
     pass
 
-class GoalNotCompletedError(Exception):
+class GoalNotCompletedError(WebIQError):
     """Raised when the automation attempts to complete the goal but verification fails."""
     pass
 

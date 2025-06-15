@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'webiq=webiq.cli.main:app', # Assuming Typer app
+            'webiq=webiq.cli.main:webiq',
         ],
     },
     author='[Your Name]',
